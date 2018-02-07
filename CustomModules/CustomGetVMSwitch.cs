@@ -24,8 +24,6 @@
         /// <summary>
         /// Gets or sets Computer Name.
         /// </summary>
-        [Parameter(Position = 5, ValueFromPipeline = true, ParameterSetName = ParameterSetOne)]
-        [Parameter(Position = 5, ValueFromPipeline = true, ParameterSetName = ParameterSetTwo)]
         public string[] ComputerName { get; set; }
 
         /// <summary>
@@ -112,6 +110,7 @@
         /// <returns>The command script.</returns>
         private string BuildScript()
         {
+            //var command = "Get-VMSwitch ";
             return "Get-VMSwitch";
         }
     }
