@@ -1,4 +1,6 @@
-﻿namespace CustomModules
+﻿using CustomModules.Models;
+
+namespace CustomModules
 {
     using System;
     using System.Linq;
@@ -26,6 +28,7 @@
         /// <summary>
         /// Gets or sets Computer Name.
         /// </summary>
+        [Parameter(Position = 5, ValueFromPipeline = true)]
         public string[] ComputerName { get; set; }
 
         /// <summary>
@@ -74,8 +77,18 @@
 
                 var results = command.Invoke();
 
-                foreach (var result in results)
+                foreach (var item in results)
                 {
+                    // Mess convertion
+                    dynamic t = item.BaseObject;
+
+                    var result = new VMSwitch
+                    {
+                        Name = t.Name,
+                        SwitchType = t.SwitchType.ToString(),
+                        NetAdapterInterfaceDescription = t.NetAdapterInterfaceDescription
+                    };
+
                     WriteObject(result);
                 }
             }
