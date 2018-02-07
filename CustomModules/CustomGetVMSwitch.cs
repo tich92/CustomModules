@@ -8,7 +8,7 @@
     /// <summary>
     /// Custom Get-VMSwitch cmdlet
     /// </summary>
-    [Cmdlet(VerbsCommon.Get, "CustomVMSwitch")]
+    [Cmdlet(VerbsCommon.Get, "CustomVMSwitch", DefaultParameterSetName = ParameterSetOne)]
     public class CustomGetVmSwitch : PSCmdlet
     {
         private const string ParameterSetOne = "ParameterSetOne";
@@ -25,6 +25,7 @@
         /// Gets or sets Computer Name.
         /// </summary>
         [Parameter(Position = 5, ValueFromPipeline = true, ParameterSetName = ParameterSetOne)]
+        [Parameter(Position = 5, ValueFromPipeline = true, ParameterSetName = ParameterSetTwo)]
         public string[] ComputerName { get; set; }
 
         /// <summary>
