@@ -1,12 +1,11 @@
-﻿using System.Linq;
-using CustomModules.Models;
-using FluentAssertions;
-
-namespace CustomModules.Tests.Extensions
+﻿namespace CustomModules.Tests.Extensions
 {
     using System.Collections.Generic;
     using System.Management.Automation;
+    using System.Linq;
     using Base;
+    using Models;
+    using FluentAssertions;
 
     public static class GetInternalSwitchesExtension
     {
