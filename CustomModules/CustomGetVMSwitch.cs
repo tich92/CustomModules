@@ -14,6 +14,8 @@
         private const string ParameterSetOne = "ParameterSetOne";
         private const string ParameterSetTwo = "ParameterSetTwo";
 
+        private static readonly string[] SwitchTypes = { "Private", "Internal", "External" };
+
         /// <summary>
         /// Gets or sets Cim Session
         /// </summary>
@@ -53,6 +55,7 @@
         /// <summary>
         /// Gets or sets Switch Type
         /// </summary>
+        [ValidateSet("Private", "Internal", "External")]
         [Parameter(Position = 3, ValueFromPipeline = true)]
         public string SwitchType { get; set; }
 
@@ -63,11 +66,13 @@
         {
             using (var powerShell = PowerShell.Create())
             {
-                powerShell.AddScript(BuildScript());
+                var command = powerShell.AddCommand("Get-VMSwitch");
 
-                this.PrepeareScript(powerShell);
+                WriteVerbose($"Current parameter set name {ParameterSetName}");
 
-                var results = powerShell.Invoke();
+                this.SetParameters(command);
+
+                var results = command.Invoke();
 
                 foreach (var result in results)
                 {
@@ -80,7 +85,7 @@
         /// Prepeare script using powershell instance.
         /// </summary>
         /// <param name="powerShell">The powershell instance.</param>
-        private void PrepeareScript(PowerShell powerShell)
+        private void SetParameters(PowerShell powerShell)
         {
             if (this.CimSession != null && this.CimSession.Any())
                 powerShell.AddParameter(nameof(this.CimSession), this.CimSession);
@@ -101,17 +106,14 @@
                 powerShell.AddParameter(nameof(this.ResourcePoolName), this.ResourcePoolName);
 
             if (!string.IsNullOrWhiteSpace(this.SwitchType))
-                powerShell.AddParameter(nameof(this.ResourcePoolName), this.ResourcePoolName);
-        }
+            {
+                if (!SwitchTypes.Contains(this.SwitchType))
+                {
+                    throw new ArgumentException($"Incorrect {nameof(this.SwitchType)}");
+                }
 
-        /// <summary>
-        /// Build command script.
-        /// </summary>
-        /// <returns>The command script.</returns>
-        private string BuildScript()
-        {
-            //var command = "Get-VMSwitch ";
-            return "Get-VMSwitch";
+                powerShell.AddParameter(nameof(this.SwitchType), this.SwitchType);
+            }
         }
     }
 }
