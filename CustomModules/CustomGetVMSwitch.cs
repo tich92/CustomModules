@@ -1,11 +1,12 @@
-﻿using CustomModules.Models;
-
-namespace CustomModules
+﻿namespace CustomModules
 {
     using System;
     using System.Linq;
+    using System.Security.Authentication;
     using System.Management.Automation;
     using Microsoft.Management.Infrastructure;
+    using Helpers;
+    using Models;
 
     /// <summary>
     /// Custom Get-VMSwitch cmdlet
@@ -69,6 +70,11 @@ namespace CustomModules
         {
             using (var powerShell = PowerShell.Create())
             {
+                if (!PrincipalHelper.IsAdminRole)
+                    throw new AuthenticationException(
+                        @"You do not have the required permission to complete this task. Contact the administrator of the
+                    authorization policy for the computer");
+
                 var command = powerShell.AddCommand("Get-VMSwitch");
 
                 WriteVerbose($"Current parameter set name {ParameterSetName}");
